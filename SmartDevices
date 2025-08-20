@@ -1,0 +1,126 @@
+// Abstract base class
+abstract class SmartDevice {
+    protected int deviceId;
+    protected String name;
+    protected boolean isOn;
+
+    public SmartDevice(int deviceId, String name) {
+        this.deviceId = deviceId;
+        this.name = name;
+        this.isOn = false;
+    }
+
+    public void turnOn() {
+        isOn = true;
+        System.out.println(name + " is now ON.");
+    }
+
+    public void turnOff() {
+        isOn = false;
+        System.out.println(name + " is now OFF.");
+    }
+
+    // Abstract method every device must implement
+    public abstract String deviceStatus();
+}
+
+// SmartLight: Concrete subclass
+class SmartLight extends SmartDevice {
+    private int brightness;
+    private String color;
+
+    public SmartLight(int deviceId, String name, int brightness, String color) {
+        super(deviceId, name);
+        this.brightness = brightness;
+        this.color = color;
+    }
+
+    public void setBrightness(int brightness) {
+        this.brightness = brightness;
+        System.out.println(name + " brightness set to " + this.brightness + "%.");
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+        System.out.println(name + " color set to " + this.color + ".");
+    }
+
+    @Override
+    public String deviceStatus() {
+        String onStatus = isOn ? "Yes" : "No";
+        return "Light [" + name + "] - ON: " + onStatus +
+               ", Brightness: " + brightness + "%" +
+               ", Color: " + color;
+    }
+}
+
+// SmartThermostat: Concrete Subclass
+class SmartThermostat extends SmartDevice {
+    private int temperature;
+
+    public SmartThermostat(int deviceId, String name, int temperature) {
+        super(deviceId, name);
+        this.temperature = temperature;
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+        System.out.println(name + " temperature set to " + this.temperature + "°C.");
+    }
+
+    @Override
+    public String deviceStatus() {
+        String onStatus = isOn ? "Yes" : "No";
+        return "Thermostat [" + name + "] - ON: " + onStatus +
+               ", Temperature: " + temperature + "°C";
+    }
+}
+
+// SmartSecurityCamera: Concrete subclass
+class SmartSecurityCamera extends SmartDevice {
+    private boolean recording;
+
+    public SmartSecurityCamera(int deviceId, String name) {
+        super(deviceId, name);
+        this.recording = false;
+    }
+
+    public void startRecording() {
+        recording = true;
+        System.out.println(name + " started recording.");
+    }
+
+    public void stopRecording() {
+        recording = false;
+        System.out.println(name + " stopped recording.");
+    }
+
+    @Override
+    public String deviceStatus() {
+        String onStatus = isOn ? "Yes" : "No";
+        String recStatus = recording ? "Yes" : "No";
+        return "Camera [" + name + "] - ON: " + onStatus + ", Recording: " + recStatus;
+    }
+}
+
+// Example in main class
+public class Main {
+    public static void main(String[] args) {
+        SmartLight light = new SmartLight(1, "Living Room Light", 50, "White");
+        SmartThermostat thermostat = new SmartThermostat(2, "Hall Thermostat", 22);
+        SmartSecurityCamera camera = new SmartSecurityCamera(3, "Front Door Camera");
+
+        light.turnOn();
+        light.setBrightness(80);
+        light.setColor("Blue");
+        System.out.println(light.deviceStatus());
+
+        thermostat.turnOn();
+        thermostat.setTemperature(25);
+        System.out.println(thermostat.deviceStatus());
+
+        camera.turnOn();
+        camera.startRecording();
+        System.out.println(camera.deviceStatus());
+    }
+}
