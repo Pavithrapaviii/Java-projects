@@ -1,0 +1,148 @@
+package onlineexam;
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== ONLINE EXAMINATION SYSTEM ===");
+        System.out.print("Enter Student Name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter Register Number: ");
+        String regNo = sc.nextLine();
+
+        User user = new User(name, regNo);
+        Exam exam = new Exam(user);
+        exam.startExam();
+
+        sc.close();
+    }
+}
+
+
+
+package onlineexam;
+
+public class User {
+    private String name;
+    private String regNo;
+
+    public User(String name, String regNo) {
+        this.name = name;
+        this.regNo = regNo;
+    }
+
+    public String getName() { return name; }
+    public String getRegNo() { return regNo; }
+}
+
+
+
+package onlineexam;
+public class Question {
+    private int id;
+    private String text;
+    private String[] options;
+    private char correctAnswer;
+
+    public Question(int id, String text, String[] options, char correctAnswer) {
+        this.id = id;
+        this.text = text;
+        this.options = options;
+        this.correctAnswer = Character.toUpperCase(correctAnswer);
+    }
+
+    public void display() {
+        System.out.println("\nQ" + id + ". " + text);
+        char ch = 'A';
+        for (String opt : options) {
+            System.out.println(ch + ". " + opt);
+            ch++;
+        }
+    }
+
+    public boolean checkAnswer(char ans) {
+        return Character.toUpperCase(ans) == correctAnswer;
+    }
+}
+
+
+package onlineexam;
+
+import java.util.*;
+
+public class Exam {
+    private List<Question> questions;
+    private User user;
+    private int score = 0;
+
+    public Exam(User user) {
+        this.user = user;
+        this.questions = new ArrayList<>();
+        loadQuestions(); // load directly, no CSV file needed
+    }
+
+    private void loadQuestions() {
+        questions.add(new Question(1, "What is the size of int in Java?",
+                new String[]{"8 bits", "16 bits", "32 bits", "64 bits"}, 'C'));
+        questions.add(new Question(2, "Which keyword is used to inherit a class?",
+                new String[]{"implements", "extends", "imports", "package"}, 'B'));
+        questions.add(new Question(3, "Which of these is not an OOP concept?",
+                new String[]{"Encapsulation", "Inheritance", "Polymorphism", "Compilation"}, 'D'));
+        questions.add(new Question(4, "Which method is the entry point of Java?",
+                new String[]{"start()", "init()", "main()", "run()"}, 'C'));
+        questions.add(new Question(5, "Which company developed Java?",
+                new String[]{"Microsoft", "Sun Microsystems", "Oracle", "IBM"}, 'B'));
+    }
+
+    public void startExam() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("\nExam Started! Answer with A, B, C, or D.");
+
+        for (Question q : questions) {
+            q.display();
+            System.out.print("Your Answer: ");
+            char ans = sc.next().charAt(0);
+            if (q.checkAnswer(ans)) {
+                score++;
+            }
+        }
+
+        Result result = new Result(user, score, questions.size());
+        result.displayResult();
+    }
+}
+
+
+
+
+package onlineexam;
+
+public class Result {
+    private User user;
+    private int score;
+    private int total;
+
+    public Result(User user, int score, int total) {
+        this.user = user;
+        this.score = score;
+        this.total = total;
+    }
+
+    public void displayResult() {
+        System.out.println("\n=== Exam Completed ===");
+        System.out.println("Name: " + user.getName());
+        System.out.println("Register Number: " + user.getRegNo());
+        System.out.println("Score: " + score + "/" + total);
+
+        if (score >= (total * 0.6)) {
+            System.out.println("Result: PASS ✅");
+        } else {
+            System.out.println("Result: FAIL ❌");
+        }
+    }
+}
+
+
+
+
